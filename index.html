@@ -2,10 +2,432 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8" />
-<meta http-equiv="refresh" content="0; url=game.html" />
-<title>ガルバファイト</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0e0418" />
+<title>ガルバファイト — 60秒、3万円超え、ブラックジョーク 大喜利キャッチボール</title>
+<meta name="description" content="深夜2時の歌舞伎町、安ガルバ「ガルバファイト」。客のトーク玉を真下でキャッチし、ボケで返球、シャンパンスロットで一発逆転。60秒の生存ゲーム。ブラウザで即プレイ。" />
+<meta property="og:title" content="ガルバファイト — 60秒ブラックジョーク大喜利キャッチボール" />
+<meta property="og:description" content="深夜の歌舞伎町、家賃8万、貯金3万。客の闇トークを受け切り、シャンパン1本で生き残れ。" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://obake0000.github.io/garbafight/" />
+<meta property="og:image" content="https://obake0000.github.io/garbafight/grafic/title.png" />
+<style>
+  :root {
+    --bg: #0a0612;
+    --bg2: #160a22;
+    --panel: #1d0d2c;
+    --line: #36223e;
+    --ink: #ebe4d2;
+    --dim: #7a6a82;
+    --gold: #d6b463;
+    --pink: #c97aa6;
+    --danger: #9b3a3a;
+    --good: #7a9b6e;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Yu Gothic UI", "Meiryo", "Hiragino Sans", -apple-system, system-ui, sans-serif;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+  a { color: var(--gold); text-decoration: none; transition: color .2s; }
+  a:hover { color: var(--pink); }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  h1, h2, h3 { margin: 0 0 .6em; font-weight: 700; letter-spacing: .04em; }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 95vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 60px 24px 80px;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse at 30% 40%, rgba(201,122,166,0.18), transparent 50%),
+      radial-gradient(ellipse at 75% 60%, rgba(214,180,99,0.12), transparent 55%),
+      linear-gradient(180deg, #0a0612 0%, #160a22 70%, #0a0612 100%);
+  }
+  .hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: url('grafic/title.png') center/cover no-repeat;
+    opacity: 0.38;
+    filter: saturate(1.1) contrast(1.05);
+  }
+  .hero::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,6,18,0.4) 0%, rgba(10,6,18,0.0) 30%, rgba(10,6,18,0.85) 100%);
+  }
+  .hero > .container { position: relative; z-index: 2; text-align: center; }
+  .badge {
+    display: inline-block;
+    padding: 6px 18px;
+    border: 1px solid var(--gold);
+    border-radius: 999px;
+    color: var(--gold);
+    font-size: 13px;
+    letter-spacing: .12em;
+    margin-bottom: 20px;
+    backdrop-filter: blur(8px);
+    background: rgba(10,6,18,0.4);
+  }
+  .title-logo {
+    font-size: clamp(48px, 9vw, 96px);
+    color: var(--gold);
+    text-shadow: 0 0 24px rgba(214,180,99,0.4), 0 0 60px rgba(201,122,166,0.25);
+    margin-bottom: .15em;
+  }
+  .tagline {
+    font-size: clamp(15px, 2.2vw, 20px);
+    color: var(--pink);
+    margin-bottom: 8px;
+  }
+  .pitch {
+    max-width: 720px;
+    margin: 28px auto 36px;
+    font-size: clamp(15px, 1.8vw, 17px);
+    color: var(--ink);
+    opacity: .9;
+  }
+  .cta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 18px; }
+  .btn {
+    display: inline-block;
+    padding: 16px 36px;
+    border-radius: 10px;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--pink), var(--gold));
+    color: #0a0612;
+    box-shadow: 0 0 32px rgba(201,122,166,0.4), 0 4px 16px rgba(0,0,0,0.4);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 48px rgba(201,122,166,0.6), 0 6px 20px rgba(0,0,0,0.5); color: #0a0612; }
+  .btn-ghost {
+    background: transparent;
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .btn-ghost:hover { background: rgba(214,180,99,0.1); color: var(--gold); }
+  .platforms {
+    margin-top: 18px;
+    font-size: 12px;
+    color: var(--dim);
+    letter-spacing: .08em;
+  }
+
+  /* SECTIONS */
+  section { padding: 80px 24px; }
+  .section-title {
+    font-size: clamp(26px, 4vw, 38px);
+    text-align: center;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .section-sub {
+    text-align: center;
+    color: var(--dim);
+    font-size: 14px;
+    margin-bottom: 50px;
+    letter-spacing: .1em;
+  }
+
+  /* FEATURES (3 STEP) */
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .feature {
+    background: linear-gradient(180deg, var(--panel) 0%, var(--bg2) 100%);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 32px 24px;
+    text-align: center;
+    transition: transform .2s, border-color .2s;
+  }
+  .feature:hover { transform: translateY(-4px); border-color: var(--gold); }
+  .feature-icon { font-size: 56px; margin-bottom: 16px; line-height: 1; }
+  .feature h3 { font-size: 22px; color: var(--pink); margin-bottom: 12px; }
+  .feature p { color: var(--ink); opacity: .85; font-size: 15px; }
+
+  /* CHARACTERS */
+  .chars {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+  }
+  .char {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 32px 20px;
+    text-align: center;
+  }
+  .char.player { border-color: var(--pink); box-shadow: 0 0 32px rgba(201,122,166,0.15); }
+  .char-emoji { font-size: 80px; line-height: 1; margin-bottom: 12px; }
+  .char-name { font-size: 22px; color: var(--gold); margin-bottom: 4px; }
+  .char-role { font-size: 13px; color: var(--dim); letter-spacing: .08em; margin-bottom: 14px; }
+  .char-desc { font-size: 14px; color: var(--ink); opacity: .9; line-height: 1.7; }
+  .char.player .char-name { color: var(--pink); }
+
+  /* JOKE PREVIEW */
+  .jokes {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 32px;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .joke-line {
+    padding: 10px 16px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .joke-cust {
+    background: rgba(214,180,99,0.12);
+    border-left: 3px solid var(--gold);
+    color: var(--ink);
+  }
+  .joke-cast {
+    background: rgba(201,122,166,0.12);
+    border-left: 3px solid var(--pink);
+    color: var(--ink);
+    text-align: right;
+  }
+  .joke-cust::before { content: "🍷 客　"; color: var(--gold); font-weight: 700; }
+  .joke-cast::before { content: "💋 アヤメ　"; color: var(--pink); font-weight: 700; }
+
+  /* STORY */
+  .story-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .story-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px;
+    font-size: 14px;
+  }
+  .story-card h4 { color: var(--gold); font-size: 16px; margin-bottom: 8px; }
+
+  /* SCREENSHOT GALLERY */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .gallery img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    transition: transform .2s, border-color .2s;
+  }
+  .gallery img:hover { transform: scale(1.03); border-color: var(--gold); }
+
+  /* CTA BOTTOM */
+  .cta-bottom {
+    text-align: center;
+    background:
+      radial-gradient(ellipse at center, rgba(201,122,166,0.18), transparent 60%),
+      var(--bg2);
+    padding: 100px 24px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .cta-bottom h2 { font-size: clamp(28px, 4.5vw, 42px); color: var(--gold); }
+  .cta-bottom p { color: var(--ink); opacity: .85; max-width: 540px; margin: 16px auto 32px; font-size: 16px; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 40px 24px;
+    color: var(--dim);
+    font-size: 13px;
+    border-top: 1px solid var(--line);
+  }
+  footer a { color: var(--dim); }
+  footer a:hover { color: var(--pink); }
+  .credit { margin-top: 8px; font-size: 11px; opacity: .6; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .hero { min-height: 85vh; padding-top: 40px; }
+    section { padding: 60px 16px; }
+    .btn { padding: 14px 28px; font-size: 15px; }
+  }
+</style>
 </head>
 <body>
-<a href="game.html">ガルバファイトを起動</a>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="badge">深夜2時 / 歌舞伎町 / 60秒</div>
+    <h1 class="title-logo">ガルバファイト</h1>
+    <div class="tagline">〜 ガルバ・キャッチボール × シャンパンスロット 〜</div>
+    <p class="pitch">
+      家賃8万、貯金3万、保証人不通。<br>
+      20歳新人ガルバ嬢アヤメが、客の <strong style="color:var(--gold)">闇トーク玉</strong> を打ち返し、
+      シャンパン1本で家賃を勝ち取る、60秒の生存ゲーム。
+    </p>
+    <div class="cta-row">
+      <a href="game.html" class="btn btn-primary">▶ 今すぐ無料でプレイ</a>
+      <a href="#about" class="btn btn-ghost">どんなゲーム？</a>
+    </div>
+    <div class="platforms">ブラウザ / スマホ対応 / インストール不要 / 完全無料</div>
+  </div>
+</header>
+
+<!-- ABOUT (3-STEP) -->
+<section id="about">
+  <div class="container">
+    <h2 class="section-title">3ステップ・60秒勝負</h2>
+    <div class="section-sub">RULES — HOW TO PLAY</div>
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">◀ ▶</div>
+        <h3>STEP 1 — 動く</h3>
+        <p>客がトーク玉を投げる。<br>画面の左右タップ（PC は ← →）で動いて、<strong style="color:var(--gold)">真下でキャッチ</strong>。<br>ズレるほど機嫌が落ちる。⚡PERFECT で +250円ボーナス。</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📈</div>
+        <h3>STEP 2 — 溜める</h3>
+        <p>連続成功でヴァイブメーター上昇。<br>満タンで足元が <strong style="color:var(--danger)">赤く光る</strong>。<br>次の返球で 🍾 シャンパンが自動発動。</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🎰</div>
+        <h3>STEP 3 — 爆発</h3>
+        <p>スロット3リール、×1 / ×3 / ×5 / 🎰JACKPOT ×10。<br>JACKPOT 後は <strong style="color:var(--pink)">ブラックジョーク独白4ページ</strong>。<br>60秒で 3万円超え、それが生存ライン。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHARACTERS -->
+<section style="background: linear-gradient(180deg, transparent, rgba(29,13,44,0.4), transparent);">
+  <div class="container">
+    <h2 class="section-title">登場キャスト</h2>
+    <div class="section-sub">CHARACTERS</div>
+    <div class="chars">
+      <div class="char">
+        <div class="char-emoji">🎀</div>
+        <div class="char-name">新人ミナ</div>
+        <div class="char-role">CPU・19歳・同期</div>
+        <div class="char-desc">親の借金300万を月10万返済中。ガルバが詰みの最終手段。<br>童顔リボンタイ、追い詰められると真顔になる。</div>
+      </div>
+      <div class="char player">
+        <div class="char-emoji">💋</div>
+        <div class="char-name">1P アヤメ</div>
+        <div class="char-role">プレイヤー・20歳・主人公</div>
+        <div class="char-desc">黒ボブ、新人2ヶ月、指名ゼロ。<br>家賃8万、貯金3万、父親着信拒否。<br>今夜3万溶かしてくれる客が来なかったら、漫喫住み確定。</div>
+      </div>
+      <div class="char">
+        <div class="char-emoji">💄</div>
+        <div class="char-name">ママ静子</div>
+        <div class="char-role">CPU・39歳・伝説の壁</div>
+        <div class="char-desc">ガルバ歴15年、月間1500万売上の女。<br>慈愛の笑顔の裏で新人を売上競争で陥れる修羅。</div>
+      </div>
+    </div>
+    <p style="text-align:center; margin-top:32px; color:var(--dim); font-size:13px;">
+      🔒 クリア（3万円超え）で <strong style="color:var(--pink)">ミナ・静子もプレイヤブル解放</strong>
+    </p>
+  </div>
+</section>
+
+<!-- BLACK HUMOR PREVIEW -->
+<section>
+  <div class="container">
+    <h2 class="section-title">ブラックジョーク 一例</h2>
+    <div class="section-sub">DIALOGUE PREVIEW</div>
+    <div class="jokes">
+      <div class="joke-line joke-cust">取引先の社長、自殺したわ</div>
+      <div class="joke-line joke-cast">えっそれヤバくないですか…(続きが気になりすぎる)</div>
+      <div class="joke-line joke-cust">老後資金、これで全部消えた😇 65歳の俺、本当にごめん…</div>
+      <div class="joke-line joke-cast">王様タイムを延長したいなら、毎月通ってくれれば未来の奴隷期間ゼロですよ〜</div>
+      <div class="joke-line joke-cust">家、売る。住宅ローンより今夜の方が圧倒的に大切だった、悟った</div>
+      <div class="joke-line joke-cast">責任重大すぎて私も家売って一緒に漫喫住みする覚悟ですよ…♪</div>
+    </div>
+    <p style="text-align:center; margin-top:24px; color:var(--dim); font-size:13px;">
+      ※ 全てフィクションです。経費横領・遺書更新・隠し子問題・反社・脱税...深夜ガルバの闇トークに、共感／オウム返し／ボケで対応。
+    </p>
+  </div>
+</section>
+
+<!-- STORY -->
+<section style="background: linear-gradient(180deg, transparent, rgba(29,13,44,0.4), transparent);">
+  <div class="container">
+    <h2 class="section-title">物語</h2>
+    <div class="section-sub">STORY — 5パネル紙芝居 ×3章</div>
+    <div class="story-grid">
+      <div class="story-card">
+        <h4>🌃 プロローグ</h4>
+        <p>裏路地の雑居ビル1階。家賃8万、貯金3万、父親着信拒否。<br>今夜来なかったら、漫喫住み確定。</p>
+      </div>
+      <div class="story-card">
+        <h4>🍾 エンディング（売上3万超え）</h4>
+        <p>「アヤメ、お前…才能あるな」ママ静子が小さく拍手。<br>朝5時のコンビニで、ガーゼ落として15秒泣く。</p>
+      </div>
+      <div class="story-card">
+        <h4>📩 ゲームオーバー（3万未達）</h4>
+        <p>大家から内容証明準備中の通知。クレカ3枚停止、残高400円。<br>「アヤメ、お前は逃げるな」ママの手は温かかった。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREENSHOTS -->
+<section>
+  <div class="container">
+    <h2 class="section-title">スクリーンショット</h2>
+    <div class="section-sub">SCREENS</div>
+    <div class="gallery">
+      <img src="grafic/prologue1.png" alt="プロローグ - 歌舞伎町午前1時" loading="lazy" />
+      <img src="grafic/prologue3.png" alt="同期のミナと伝説のママ静子" loading="lazy" />
+      <img src="grafic/ending1.png" alt="エンディング - 今夜のNo.1" loading="lazy" />
+      <img src="grafic/ending5.png" alt="エンディング - 続いていく夜" loading="lazy" />
+      <img src="grafic/gameover3.png" alt="ゲームオーバー - ママの励まし" loading="lazy" />
+      <img src="grafic/gameover5.png" alt="ゲームオーバー - 再戦" loading="lazy" />
+    </div>
+  </div>
+</section>
+
+<!-- CTA BOTTOM -->
+<section class="cta-bottom">
+  <h2>3万円、超えてくれ。</h2>
+  <p>今夜だけは、超えてくれ。深呼吸ひとつ、ライト点灯、客の影が自動ドアを横切る。</p>
+  <a href="game.html" class="btn btn-primary">▶ 無料でプレイ開始</a>
+  <div class="platforms" style="margin-top:18px;">所要 約3分 / インストール不要 / セーブ自動</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <a href="https://github.com/obake0000/garbafight" target="_blank" rel="noopener">GitHub リポジトリ</a>
+    　/
+    <a href="game.html">直接プレイ</a>
+  </div>
+  <div class="credit">
+    © 2026 ガルバファイト / フィクション / 実在の人物・団体とは関係ありません<br>
+    Created with Claude Code
+  </div>
+</footer>
+
 </body>
 </html>
