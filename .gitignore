@@ -1,0 +1,23 @@
+# Build scripts (not needed for deploy)
+*.py
+server.log
+
+# Source assets — base64 で game.html に埋め込み済なので deploy には不要
+grafic/cast_sheet.png
+grafic/cast_action_sheet.png
+grafic/customer_sheet.png
+grafic/portrait_sheet.png
+grafic/effects_sheet.png
+grafic/bg_bar.png
+grafic/title.png
+grafic/ChatGPT*.png
+
+# Generated prompts (公開不要)
+画像生成プロンプト/
+
+# IDE
+.vscode/
+
+# OS
+Thumbs.db
+.DS_Store
