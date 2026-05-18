@@ -525,7 +525,7 @@ const IMG_DATA = {
         }
       } else {
         popups.push({txt:`${c.name.replace('新人','').replace('ママ','')}: +${earn}`, x:CUST_SLOTS[b.slot].x, y:Y_CUST+30, vy:-0.3, life:1.0, color:COL.dim, size:11});
-        // CPUヴァイブ蓄積：プレイヤーの2倍速で貯める
+        // CPU沼ゲージ蓄積：プレイヤーの2倍速で貯める
         if(score>=0){
           const vAdd = (score>=20?60:40) + (prec==='PERFECT'?24:prec==='GOOD'?14:0);
           c.cpuVibe = clamp((c.cpuVibe||0)+vAdd, 0, 100);
@@ -747,7 +747,7 @@ const IMG_DATA = {
       }
     });
   }
-  // スロットはヴァイブ満タンで返球時に自動発動（slot番号は返球先の客）
+  // スロットは沼ゲージ満タンで返球時に自動発動（slot番号は返球先の客）
   function autoStartSlot(slot, precision){
     if(vibe<100 || jp || resultShow) return false;
     const cu=customers[slot]; if(!cu) return false;
@@ -836,7 +836,7 @@ const IMG_DATA = {
   // ============================================================
   // 移動ボタンは画面左下にコンパクトフロート
   // 移動ボタン撤去。画面左右半分タップで移動。
-  // 🍾ボタンは撤去（ヴァイブMAXは足元の赤光＋次の返球で自動発動）
+  // 🍾ボタンは撤去（沼ゲージMAXは足元の赤光＋次の返球で自動発動）
 
   function inRect(x,y,r){ return x>=r.x && x<=r.x+r.w && y>=r.y && y<=r.y+r.h; }
 
@@ -1106,8 +1106,8 @@ const IMG_DATA = {
   const PROLOGUE_PAGES=[
     {title:'歌舞伎町・午前1時', body:'裏路地の雑居ビル1階、看板も他店に押し負けてる安ガルバ「ガルバファイト」。\nゴミ袋3つと室外機の隙間に挟まれた自動ドアが、今夜の戦場の入り口。\nアヤメ20歳、新人2ヶ月、指名ゼロ。昨日コンビニのバイトを首になった。\n月の家賃8万、貯金3万、保証人の父親には連絡がつかない。\n「今夜、3万溶かしてくれる客が来なかったら、来週は漫喫住み」\nスマホの電池残量18%、明日の電車代を計算する余裕はもう無い。'},
     {title:'今夜の刺客', body:'真面目リーマン田中（退職届と離婚届を机に重ねて3年）。\nほろ酔いの中間管理職（部下のメンタル3人飛ばした自慢）。\nM社長と名乗る何屋か不明の男（顧問弁護士はもう3人目）。\n病み客の伊藤さん（遺書を更新するためだけに来店する）。\n初心者の新人くん（彼女に振られた帰りに連れてこられた）。\nそしてVIPの金持ち、隠し子5人と元嫁3人を抱えた老人が来る。\n全員、誰かに話を聞いてもらわないと今夜が終わる、そういう客だ。'},
-    {title:'同期のミナと、伝説のママ静子', body:'同期の新人ミナは19歳、童顔、リボンタイの似合う田舎出身。\n親の借金300万を月10万ずつ返済中、ガルバが詰みの最終手段。\n指名は今日が初日、それまで6週連続ボトムテン。\nママ静子は39歳、ガルバ歴15年、伝説の月間1500万売上の女。\n表向きは慈愛の笑み、裏では新人を売上競争で陥れる修羅。\nアヤメは思う、「この2人に勝たないと家賃が払えない」。\nヴァイブを溜め、シャンパンを抜いた者だけが「今夜のNo.1」を名乗れる。'},
-    {title:'ルール', body:'客のトーク玉を自分の真下で受ける。位置がズレるほど機嫌が落ちる。\nPERFECT(12px以内)＝機嫌+30、ヴァイブ+40、売上ボーナス+250。\nGOOD(32px以内)でも機嫌+18、ヴァイブ+25、ボーナス+100。\n外すと客の機嫌は-10、3回ミスれば客は怒り退店、収益ゼロ。\nヴァイブ満タンになったら足元が赤く光る。次の返球で自動シャンパン発動。\nスロットは×1 / ×3 / ×5 / JACKPOT×10。JACKPOT後はブラックジョーク独白4ページ。\nCPUのミナと静子も同じルールで玉を奪い合うから、譲ったら負け。'},
+    {title:'同期のミナと、伝説のママ静子', body:'同期の新人ミナは19歳、童顔、リボンタイの似合う田舎出身。\n親の借金300万を月10万ずつ返済中、ガルバが詰みの最終手段。\n指名は今日が初日、それまで6週連続ボトムテン。\nママ静子は39歳、ガルバ歴15年、伝説の月間1500万売上の女。\n表向きは慈愛の笑み、裏では新人を売上競争で陥れる修羅。\nアヤメは思う、「この2人に勝たないと家賃が払えない」。\n沼ゲージを溜め、シャンパンを抜いた者だけが「今夜のNo.1」を名乗れる。'},
+    {title:'ルール', body:'客のトーク玉を自分の真下で受ける。位置がズレるほど機嫌が落ちる。\nPERFECT(12px以内)＝機嫌+30、沼ゲージ+40、売上ボーナス+250。\nGOOD(32px以内)でも機嫌+18、沼ゲージ+25、ボーナス+100。\n外すと客の機嫌は-10、3回ミスれば客は怒り退店、収益ゼロ。\n沼ゲージ満タンになったら足元が赤く光る。次の返球で自動シャンパン発動。\nスロットは×1 / ×3 / ×5 / JACKPOT×10。JACKPOT後はブラックジョーク独白4ページ。\nCPUのミナと静子も同じルールで玉を奪い合うから、譲ったら負け。'},
     {title:'勝利条件', body:'60秒で売上3万円超え。家賃の振込期限まで残り12時間。\n達成できなければ漫喫住み確定、もしくは実家への土下座旅行。\nそして実家はもう、アヤメを受け入れる気は無い、父親の電話は今も拒否中。\n超えられたら来月の家賃と、ついでに親への仕送り5,000円。\n超えられなかったら、ミナがアヤメの机を引き継ぐ、ママは静かに首切る。\n「3万、超えてくれ。今夜だけは、超えてくれ」\n深呼吸ひとつ、ライト点灯、客の影が自動ドアを横切る。'},
   ];
   const ENDING_PAGES=[
@@ -1307,14 +1307,14 @@ const IMG_DATA = {
     if(keys['arrowright']||keys['d']) ax+=1;
     if(ax){ player.vx+=ax*player.accel*dt; player.vx=clamp(player.vx,-player.speed,player.speed); }
     else player.vx*=0.7;
-    // プレイヤー：受け取った玉の自動返球（ヴァイブMAXなら同時にスロット自動発動）
+    // プレイヤー：受け取った玉の自動返球（沼ゲージMAXなら同時にスロット自動発動）
     if(player.pendingBall){
       player.pendingT -= dt;
       if(player.pendingT<=0){
         const slot=player.pendingBall.slot;
         const key=player.pendingAutoKey || 'gentle';
         const prec=player.precision || 'OK';
-        // ヴァイブ満タンならスロット起動
+        // 沼ゲージ満タンならスロット起動
         if(vibe>=100){
           autoStartSlot(slot, prec);
         } else {
@@ -1434,12 +1434,12 @@ const IMG_DATA = {
       text(`${i+1}位 ${c.name.replace('1P ','').replace('新人','').replace('ママ','')}`, x+38, 8, 11, nc);
       text('💴'+c.sales.toLocaleString(), x+38, 23, 14, i===0?COL.gold:COL.ink);
     });
-    // ヴァイブメーター(横、HUDで強調)
+    // 沼ゲージメーター(横、HUDで強調)
     const vmX=W-280, vmY=12, vmW=260, vmH=24;
     // 外枠
     const r=vibe/100;
     const ready = r>=1;
-    text('🍾 ヴァイブ', vmX-2, vmY-14, 11, COL.gold, 'left');
+    text('🍾 沼ゲージ', vmX-2, vmY-14, 11, COL.gold, 'left');
     // 背景
     roundRect(vmX, vmY, vmW, vmH, 8, COL.panel2, ready?COL.gold:COL.pink, ready?3:2);
     // フィル（グラデっぽい複数色）
@@ -1555,7 +1555,7 @@ const IMG_DATA = {
         ctx.beginPath(); ctx.arc(c.x, ay+drawH/2, 60, 0, Math.PI*2); ctx.fill();
         ctx.restore();
       }
-      // 足元の赤光（プレイヤー＋ヴァイブMAX時）
+      // 足元の赤光（プレイヤー＋沼ゲージMAX時）
       const baseFloorY = Y_CAST+H_CAST-10;
       if(c.isPlayer && vibe>=100){
         const beat = 0.5+0.5*Math.sin(performance.now()/120);
@@ -1572,7 +1572,7 @@ const IMG_DATA = {
           text('🍾 READY', c.x, ay-30, 11, COL.danger, 'center');
         }
       }
-      // CPU足元のヴァイブ蓄積光（80%↑で点く）
+      // CPU足元の沼ゲージ蓄積光（80%↑で点く）
       if(!c.isPlayer && c.cpuVibe>=80 && !c.cpuJp){
         const beat = 0.5+0.5*Math.sin(performance.now()/180);
         ctx.save();
@@ -1618,7 +1618,7 @@ const IMG_DATA = {
       // 名前
       const lbl = c.isPlayer?'アヤメ':c.name.replace('新人','').replace('ママ','');
       text(lbl, c.x, baseFloorY+10, 10, c.isPlayer?COL.pink:COL.ink, 'center');
-      // CPUヴァイブの細バー（名前の下）
+      // CPU沼ゲージの細バー（名前の下）
       if(!c.isPlayer){
         const bw=46, bh=3;
         const bx=c.x-bw/2, by=baseFloorY+16;
@@ -1906,10 +1906,10 @@ const IMG_DATA = {
     text('真下でキャッチ', c1x, sY+126, 13, COL.gold, 'center');
     text('⚡PERFECT = +250円', c1x, sY+144, 10, COL.gold, 'center');
 
-    // Step 2: ヴァイブ溜める
+    // Step 2: 沼ゲージ溜める
     const c2x = W/2;
     text('STEP 2', c2x, sY+12, 12, COL.gold, 'center');
-    text('ヴァイブ満タン', c2x, sY+30, 16, COL.ink, 'center');
+    text('沼ゲージ満タン', c2x, sY+30, 16, COL.ink, 'center');
     const mX = c2x - 22, mW = 44, mY = sY+50, mH = 60;
     ctx.fillStyle = COL.panel2; ctx.fillRect(mX, mY, mW, mH);
     const fill = (Math.sin(titleT*1.2)*0.5+0.5);
