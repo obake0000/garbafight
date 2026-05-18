@@ -18,29 +18,60 @@
 </head>
 <body>
 <div id="wrap"><canvas id="game" width="960" height="540"></canvas></div>
-<video id="opening" src="grafic/opening.mp4" muted playsinline preload="auto"
+<video id="opening" src="grafic/opening.mp4" autoplay muted playsinline preload="auto"
   style="position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:100vw;height:100vh;object-fit:cover;background:#000;z-index:9999;cursor:pointer"></video>
-<div id="skip" style="position:fixed;top:16px;right:16px;z-index:10000;color:#ebe4d2;background:rgba(0,0,0,0.55);padding:6px 14px;border-radius:6px;border:1px solid #d6b463;font-family:'Yu Gothic UI',Meiryo,sans-serif;font-size:13px;cursor:pointer;display:none">SKIP ▶</div>
+<div id="skip" style="position:fixed;top:16px;right:16px;z-index:10000;color:#ebe4d2;background:rgba(0,0,0,0.55);padding:8px 18px;border-radius:8px;border:1px solid #d6b463;font-family:'Yu Gothic UI',Meiryo,sans-serif;font-size:14px;cursor:pointer">SKIP ▶</div>
 <script>
 (() => {
   const v = document.getElementById('opening');
   const sb = document.getElementById('skip');
+  let hidden = false;
+  let audioStarted = false;
+  function tryStartBGM(name){
+    if(!window.__garba) return false;
+    const ac = window.__garba.ensureAudio();
+    if(!ac) return false;
+    if(ac.state==='suspended'){ try{ ac.resume(); }catch(e){} }
+    if(ac.state==='running'){
+      window.__garba.startBGM(name);
+      audioStarted = true;
+      return true;
+    }
+    return false;
+  }
   function hideOpening(){
-    if(!v) return;
+    if(hidden || !v) return;
+    hidden = true;
     v.style.transition='opacity 0.5s';
     v.style.opacity='0';
     sb.style.display='none';
     setTimeout(()=>{ v.style.display='none'; try{v.pause();}catch(e){} }, 520);
+    // 動画終了 → タイトル BGM へ
+    setTimeout(()=>tryStartBGM('title'), 80);
   }
   if(v){
-    sb.style.display='block';
-    v.play().catch(()=>{ hideOpening(); });
+    v.play().catch(()=>{ /* 自動再生失敗時はそのまま */ });
     v.addEventListener('ended', hideOpening);
-    v.addEventListener('click', hideOpening);
+    v.addEventListener('click', ()=>{ tryStartBGM(hidden?'title':'opening'); hideOpening(); });
     sb.addEventListener('click', hideOpening);
     window.addEventListener('keydown', e=>{
-      if(v.style.display!=='none' && (e.key==='Escape'||e.key==='Enter'||e.key===' ')){ hideOpening(); e.preventDefault(); }
+      if(!hidden && (e.key==='Escape'||e.key==='Enter'||e.key===' ')){
+        tryStartBGM('title'); hideOpening(); e.preventDefault();
+      }
     }, true);
+    // 初回ユーザー操作で BGM 解禁
+    const unlock = ()=>{
+      if(audioStarted) return;
+      const name = hidden ? 'title' : 'opening';
+      if(tryStartBGM(name)){
+        document.removeEventListener('pointerdown', unlock, true);
+        document.removeEventListener('keydown', unlock, true);
+        document.removeEventListener('touchstart', unlock, true);
+      }
+    };
+    document.addEventListener('pointerdown', unlock, true);
+    document.addEventListener('keydown', unlock, true);
+    document.addEventListener('touchstart', unlock, true);
   }
 })();
 </script>
@@ -789,6 +820,8 @@ const IMG_DATA = {
   let pressedSide=null;
   canvas.addEventListener('pointerdown', e=>{
     ensureAudio();
+    // タイトル/エンド時に BGM 未再生なら タイトルBGM 起動
+    if((phase==='title'||phase==='end') && !bgmTimer){ startBGM('title'); }
     const r=canvas.getBoundingClientRect();
     const x=(e.clientX-r.left)*W/r.width, y=(e.clientY-r.top)*H/r.height;
     if(phase==='title'){
@@ -925,11 +958,32 @@ const IMG_DATA = {
       },
       tickMs:380, hihat:false, clap:false, beat:'ballad',
     },
+    opening: { // オープニング動画用 — シネマティック、不穏で期待感
+      chords:['Dm','Bb','F','C'],
+      map:{
+        Dm:{bass:147,top:[294,349,440],mel:[587,440,349,294,349,440,587,698]},
+        Bb:{bass:117,top:[294,349,466],mel:[466,349,294,233,294,349,466,587]},
+        F: {bass:175,top:[262,349,440],mel:[523,440,349,262,349,440,523,659]},
+        C: {bass:131,top:[262,330,392],mel:[523,392,330,262,330,392,523,659]},
+      },
+      tickMs:360, hihat:false, clap:false, beat:'ballad',
+    },
+    title: { // タイトル画面 — 軽くダーク、待機感、緩いシンセウェーブ
+      chords:['Am','F','C','G'],
+      map:{
+        Am:{bass:110,top:[262,330,440],mel:[440,523,587,440,523,440,330,262]},
+        F: {bass:175,top:[262,349,440],mel:[440,523,440,349,440,523,440,349]},
+        C: {bass:131,top:[262,330,392],mel:[523,440,392,330,392,440,523,440]},
+        G: {bass:196,top:[294,392,494],mel:[494,440,392,294,392,440,494,587]},
+      },
+      tickMs:280, hihat:true, clap:false, beat:'ballad',
+    },
   };
   let bgmTimer=null, bgmStep=0, bgmCurrent='play';
   function bgmTick(){
     const ac=ensureAudio(); if(!ac) return;
-    if(phase==='title' || phase==='end') return;
+    // 'end' フェーズだけ停止（title/opening/prologue/play/outroは流す）
+    if(phase==='end') return;
     const preset = BGM_PRESETS[bgmCurrent] || BGM_PRESETS.play;
     const chord=preset.chords[Math.floor(bgmStep/8)%4], n=preset.map[chord], sub=bgmStep%8;
     if(preset.beat==='funk'){
@@ -966,6 +1020,17 @@ const IMG_DATA = {
     bgmTimer = setInterval(bgmTick, preset.tickMs);
   }
   function stopBGM(){ if(bgmTimer){ clearInterval(bgmTimer); bgmTimer=null; } }
+
+  // オープニング動画/タイトル画面でも BGM 再生できるよう外部公開
+  window.__garba = {
+    ensureAudio: ()=>{
+      const ac = ensureAudio();
+      if(ac && ac.state==='suspended'){ try{ ac.resume(); }catch(e){} }
+      return ac;
+    },
+    startBGM: (name)=>startBGM(name),
+    stopBGM: ()=>stopBGM(),
+  };
 
   // ============================================================
   // HELPERS
