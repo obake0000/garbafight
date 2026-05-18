@@ -9,7 +9,7 @@ grafic/customer_sheet.png
 grafic/portrait_sheet.png
 grafic/effects_sheet.png
 grafic/bg_bar.png
-grafic/title.png
+# title.png は startGate の CSS背景に使うので deploy 必須
 grafic/ChatGPT*.png
 
 # Generated prompts (公開不要)
